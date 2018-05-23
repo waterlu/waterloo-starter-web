@@ -17,7 +17,17 @@ public class ResponseResult<T> extends ResponseEntity<ResponseData<T>> {
      *
      * @param body
      */
-    public ResponseResult (ResponseData<T> body) {
+    public ResponseResult(ResponseData<T> body) {
         super(body, HttpStatus.OK);
+    }
+
+    /**
+     * 返回错误码和错误信息
+     *
+     * @param errorCode
+     * @param errorMessage
+     */
+    public ResponseResult(int errorCode, String errorMessage) {
+        super(new ResponseData(errorCode,errorMessage), HttpStatus.OK);
     }
 }

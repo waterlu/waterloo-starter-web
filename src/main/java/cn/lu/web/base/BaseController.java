@@ -1,10 +1,12 @@
-package cn.lu.web.api;
+package cn.lu.web.base;
 
 import cn.lu.web.mvc.*;
 import cn.lu.web.vo.InsertGroup;
 import cn.lu.web.vo.ParamDTO;
 import cn.lu.web.vo.UpdateGroup;
 import com.alibaba.fastjson.JSON;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,10 +16,15 @@ import java.lang.reflect.Type;
 /**
  * Controller基类
  *
- * @author lu
+ * @author lutiehua
  * @date 2018/5/11
  */
-public abstract class BaseController<T> {
+public abstract class BaseController<T extends BaseEntity, P extends ParamDTO> {
+
+    /**
+     * 日志
+     */
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * 获取服务类
@@ -27,13 +34,22 @@ public abstract class BaseController<T> {
     public abstract BaseService<T> getService();
 
     /**
+     * 更新前需要设置主键，底层不知道哪个字段是主键
+     * TODO 生成实体类时自动根据@Id识别主键生成get/set方法（有难度）
+     *
+     * @param entity
+     * @param id
+     */
+    public abstract void setEntityId(T entity, Object id);
+
+    /**
      * 创建-C
      *
      * @return
      * @throws BizException
      */
     @PostMapping(value = "")
-    public ResponseResult create(@RequestBody @Validated({InsertGroup.class}) ParamDTO param) throws BizException {
+    public ResponseResult create(@RequestBody @Validated({InsertGroup.class}) P param) throws BizException {
         // 将入参转换为实体类对象，方便Mapper操作
         T entity = paramToEntity(param);
 
@@ -56,7 +72,7 @@ public abstract class BaseController<T> {
      * @throws BizException
      */
     @GetMapping(value = "/{id}")
-    public ResponseResult get(@PathVariable Object id) throws BizException {
+    public ResponseResult get(@PathVariable Long id) throws BizException {
         // 根据主键读取数据
         T entity = getService().get(id);
 
@@ -72,14 +88,17 @@ public abstract class BaseController<T> {
     /**
      * 更新-U
      *
-     * @return
+     * @return 数据库更新的行数
      * @throws BizException
      */
     @PutMapping(value = "/{id}")
-    public ResponseResult update(@PathVariable Object id, @RequestBody @Validated({UpdateGroup.class}) ParamDTO param)
+    public ResponseResult update(@PathVariable Long id, @RequestBody @Validated({UpdateGroup.class}) P param)
             throws BizException {
         // 将入参转换为实体类对象，方便Mapper操作
         T entity = paramToEntity(param);
+
+        // 设置ID字段值
+        setEntityId(entity, id);
 
         // 更新数据库
         int row = getService().update(entity);
@@ -90,14 +109,14 @@ public abstract class BaseController<T> {
     }
 
     /**
-     * 删除-D
+     * 删除-D（逻辑删除）
      *
      * @param id
-     * @return
+     * @return 数据库更新的行数
      * @throws BizException
      */
     @DeleteMapping(value = "/{id}")
-    public ResponseResult delete(@PathVariable Object id) throws BizException {
+    public ResponseResult delete(@PathVariable Long id) throws BizException {
         // 逻辑删除
         int row = getService().delete(id);
 
@@ -107,19 +126,20 @@ public abstract class BaseController<T> {
     }
 
     /**
-     * 将参数对象转化为实体类对象，基类提供默认实现；如果不满足需要，请覆盖该方法自行实现
+     * 将入参对象转换为与数据库对应的实体类对象，默认实现是DTO类和Entity类字段一对一转换，如果不满足要求请覆盖此方法。
+     * 此方法在基类的create()方法中调用，如果覆盖了create()方法请忽略此方法。
      *
      * @param param
-     * @param <T>
      * @return
      */
-    protected <T> T paramToEntity(ParamDTO param) {
+    protected T paramToEntity(P param) {
         String jsonString = JSON.toJSONString(param);
-        return (T) JSON.parseObject(jsonString, getEntityType());
+        return (T) JSON.parseObject(jsonString, getEntityType(0));
     }
 
     /**
-     * 将实体类对象转化为返回的值对象，基类默认实现为直接返回实体类对象，如果需要转换请覆盖该方法自行实现
+     * 封装返回结果，默认直接返回实体类对象。
+     * 如果需要进行处理，请将Entity类对象转换为VO对象，并放入ResponseData中返回。
      *
      * @param entity
      * @return
@@ -133,12 +153,12 @@ public abstract class BaseController<T> {
      *
      * @return
      */
-    protected Type getEntityType() {
+    protected Type getEntityType(int index) {
         // 读取泛型参数
         Type superType = this.getClass().getGenericSuperclass();
         if (superType instanceof ParameterizedType) {
-            // 只有一个泛型，所以读取[0]即可
-            return ((ParameterizedType) superType).getActualTypeArguments()[0];
+            // 第一个泛型是实体类，所以读取[0]
+            return ((ParameterizedType) superType).getActualTypeArguments()[index];
         } else {
             throw new RuntimeException("Unknown entity class type");
         }

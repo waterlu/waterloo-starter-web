@@ -7,6 +7,7 @@ import tk.mybatis.mapper.mapperhelper.MapperHelper;
 import tk.mybatis.mapper.mapperhelper.MapperTemplate;
 import tk.mybatis.mapper.mapperhelper.SqlHelper;
 
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -33,7 +34,15 @@ public class MybatisProvider extends MapperTemplate {
         sql.append("<set>");
         sql.append("delete_flag = 1");
         sql.append("</set>");
-        sql.append(SqlHelper.wherePKColumns(entityClass));
+        sql.append("<where>");
+        Set<EntityColumn> columnList = EntityHelper.getPKColumns(entityClass);
+        Iterator var3 = columnList.iterator();
+        while(var3.hasNext()) {
+            EntityColumn column = (EntityColumn)var3.next();
+            sql.append(" AND " + column.getColumnEqualsHolder());
+        }
+        sql.append(" AND delete_flag = 0");
+        sql.append("</where>");
         return sql.toString();
     }
 
