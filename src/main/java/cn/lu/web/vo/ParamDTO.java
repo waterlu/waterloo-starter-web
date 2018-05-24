@@ -1,5 +1,7 @@
 package cn.lu.web.vo;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * 请求参数的基类
  *
@@ -11,12 +13,14 @@ public class ParamDTO {
     /**
      * 请求来源标识
      */
-    private String callSystemID;
+    @ApiModelProperty(value = "调用方ID", required = true)
+    private String callSystemID = "0000";
 
     /**
      * 请求追踪标识
      */
-    private String traceID;
+    @ApiModelProperty(value = "追踪ID", required = true)
+    private String traceID = "";
 
     public String getCallSystemID() {
         return callSystemID;

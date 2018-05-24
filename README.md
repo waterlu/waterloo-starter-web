@@ -19,6 +19,12 @@ Web服务的基础框架和基础类，基于Spring Boot
   - 更新：根据主键更新
   - 删除：根据主键逻辑删除
 
+## 版本
+
+### V1.0.1
+
+- 增加Swagger2接口声明
+
 ## 使用
 
 ### @EnableWaterlooWeb

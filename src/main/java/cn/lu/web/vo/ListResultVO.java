@@ -1,5 +1,9 @@
 package cn.lu.web.vo;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.util.List;
 
 /**
@@ -8,6 +12,9 @@ import java.util.List;
  * @author lu
  * @date 2018/5/11
  */
+@Getter
+@Setter
+@ToString
 public class ListResultVO<T> {
 
     /**
