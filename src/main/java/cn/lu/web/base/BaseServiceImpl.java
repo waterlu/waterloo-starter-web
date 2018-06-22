@@ -117,11 +117,20 @@ public abstract class BaseServiceImpl<T, V extends QueryParam> implements BaseSe
             // 第一个泛型是实体类，所以读取[0]
             entityClassType = ((ParameterizedType) superType).getActualTypeArguments()[0];
         } else {
+            logger.error("Unknown entity class type");
             throw new FrameException("Unknown entity class type");
         }
 
         // 这里需要指定实体类名
-        Example condition = new Example(entityClassType.getClass());
+        String className = entityClassType.getTypeName();
+        Class classType = null;
+        try {
+            classType = Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            logger.error(e.getMessage());
+            throw new FrameException(e.getMessage());
+        }
+        Example condition = new Example(classType);
 
         // 创建查询条件
         Example.Criteria criteria = condition.createCriteria();
@@ -132,6 +141,10 @@ public abstract class BaseServiceImpl<T, V extends QueryParam> implements BaseSe
         for (Map.Entry<String, Object> entry : queryMap.entrySet()) {
             String property = entry.getKey();
             Object value = entry.getValue();
+            // 跳过callSystemID和traceID
+            if ("callSystemID".equalsIgnoreCase(property) || "traceID".equalsIgnoreCase(property)) {
+                continue;
+            }
             // 跳过startRow和pageSize
             if ("startRow".equalsIgnoreCase(property) || "pageSize".equalsIgnoreCase(property)) {
                 continue;
