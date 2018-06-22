@@ -20,7 +20,9 @@ public enum ResponseCode {
     // 服务暂时不可用
     UNAVAILABLE(503),
     // 数据库操作失败
-    DB_FAILED(601);
+    DB_FAILED(601),
+    // 框架异常
+    FRAME_FAILED(602);
 
     public int code;
 

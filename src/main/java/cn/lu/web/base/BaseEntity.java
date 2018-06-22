@@ -30,6 +30,13 @@ public abstract class BaseEntity implements Serializable {
     @Column(name = "update_time")
     private Date updateTime;
 
+    public BaseEntity() {
+        Date now = new Date();
+        deleteFlag = 0;
+        createTime = now;
+        updateTime = now;
+    }
+
     public Integer getDeleteFlag() {
         return deleteFlag;
     }

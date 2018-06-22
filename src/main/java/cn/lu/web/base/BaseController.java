@@ -1,11 +1,9 @@
 package cn.lu.web.base;
 
 import cn.lu.web.mvc.*;
-import cn.lu.web.vo.InsertGroup;
-import cn.lu.web.vo.ParamDTO;
-import cn.lu.web.vo.UpdateGroup;
+import cn.lu.web.vo.*;
 import com.alibaba.fastjson.JSON;
-import io.swagger.annotations.ApiOperation;
+import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.annotation.Validated;
@@ -13,14 +11,18 @@ import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.List;
 
 /**
  * Controller基类
+ * T 实体类名
+ * P 创建和更新的参数类名
+ * Q 查询的参数类名
  *
  * @author lutiehua
  * @date 2018/5/11
  */
-public abstract class BaseController<T extends BaseEntity, P extends ParamDTO> {
+public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q extends QueryParam> {
 
     /**
      * 日志
@@ -32,7 +34,7 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO> {
      *
      * @return
      */
-    public abstract BaseService<T> getService();
+    public abstract BaseService<T, Q> getService();
 
     /**
      * 更新前需要设置主键，底层不知道哪个字段是主键
@@ -83,6 +85,28 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO> {
         }
 
         ResponseData responseData = entityToVo(entity);
+        return new ResponseResult(responseData);
+    }
+
+    /**
+     * 查询
+     *
+     * @return
+     * @throws BizException
+     */
+    @GetMapping(value = "/query")
+    public ResponseResult query(@RequestBody @Validated Q param) throws BizException {
+        // 根据条件查询数据
+        List<T> list = getService().query(param);
+
+        PageInfo pageInfo = new PageInfo(list);
+        ListResultVO<T> resultVO = new ListResultVO();
+        resultVO.setCount(pageInfo.getTotal());
+        resultVO.setPageCount(pageInfo.getPages());
+        resultVO.setPageNum(pageInfo.getPageNum());
+        resultVO.setPageSize(pageInfo.getPageSize());
+        resultVO.setList(list);
+        ListResponseData responseData = new ListResponseData(resultVO);
         return new ResponseResult(responseData);
     }
 

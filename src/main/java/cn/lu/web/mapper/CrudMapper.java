@@ -1,8 +1,13 @@
 package cn.lu.web.mapper;
 
 import org.apache.ibatis.annotations.DeleteProvider;
+import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Options;
 import tk.mybatis.mapper.common.BaseMapper;
 import tk.mybatis.mapper.common.RowBoundsMapper;
+import tk.mybatis.mapper.provider.SpecialProvider;
+
+import java.util.List;
 
 /**
  * 单表Mapper的基类
@@ -22,5 +27,13 @@ public interface CrudMapper<T> extends BaseMapper<T>, RowBoundsMapper<T> {
     @DeleteProvider(type = MybatisProvider.class, method = "dynamicSQL")
     int deleteFlag(Object key);
 
-
+//    /**
+//     * 批量写入
+//     *
+//     * @param recordList
+//     * @return
+//     */
+//    @Options(useGeneratedKeys = true, keyProperty = "id")
+//    @InsertProvider(type = SpecialProvider.class, method = "dynamicSQL")
+//    int insertList(List<T> recordList);
 }

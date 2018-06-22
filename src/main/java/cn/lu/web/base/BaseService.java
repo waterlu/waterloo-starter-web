@@ -1,29 +1,17 @@
 package cn.lu.web.base;
 
-import cn.lu.web.mapper.CrudMapper;
 import cn.lu.web.mvc.BizException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import cn.lu.web.vo.QueryParam;
+
+import java.util.List;
 
 /**
- * Service基类
+ * CRUD服务接口
  *
- * @author lutiehua
- * @date 2018/5/11
+ * @author lu
+ * @date 2018/6/21
  */
-public abstract class BaseService<T> {
-
-    /**
-     * 日志
-     */
-    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    /**
-     * 获取Mapper，子类实现
-     *
-     * @return
-     */
-    public abstract CrudMapper<T> getMapper();
+public interface BaseService<T, V extends QueryParam> {
 
     /**
      * 持久化到数据库
@@ -32,9 +20,7 @@ public abstract class BaseService<T> {
      * @return
      * @throws BizException
      */
-    public int save(T entity) throws BizException {
-        return getMapper().insertSelective(entity);
-    }
+    int save(T entity) throws BizException;
 
     /**
      * 通过主鍵查找
@@ -43,9 +29,7 @@ public abstract class BaseService<T> {
      * @return
      * @throws BizException
      */
-    <T> T get(Object id) throws BizException {
-        return (T) getMapper().selectByPrimaryKey(id);
-    }
+    <T> T get(Object id) throws BizException;
 
     /**
      * 更新数据库（根据主键更新）
@@ -54,9 +38,7 @@ public abstract class BaseService<T> {
      * @return
      * @throws BizException
      */
-    int update(T entity) throws BizException {
-        return getMapper().updateByPrimaryKeySelective(entity);
-    }
+    int update(T entity) throws BizException;
 
     /**
      * 通过主鍵进行逻辑刪除
@@ -65,24 +47,23 @@ public abstract class BaseService<T> {
      * @return
      * @throws BizException
      */
-    int delete(Object id) throws BizException {
-        return getMapper().deleteFlag(id);
-    }
+    int delete(Object id) throws BizException;
 
-//    /**
-//     * 根据相等条件进行查询
-//     *
-//     * @param queryParam 查询参数
-//     * @return
-//     */
-//    ListResponseResult<UserVO> query(UserQueryDTO queryParam);
-//
-//    /**
-//     * 批量持久化到数据库
-//     *
-//     * @param userList
-//     * @return
-//     * @throws BusinessException
-//     */
-//    int save(List<User> userList) throws BusinessException;
+    /**
+     * 批量持久化到数据库
+     *
+     * @param list
+     * @return
+     * @throws BizException
+     */
+    int save(List<T> list) throws BizException;
+
+    /**
+     * 根据条件查询
+     *
+     * @param param
+     * @return
+     * @throws BizException
+     */
+    List<T> query(V param) throws BizException;
 }
