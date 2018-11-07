@@ -11,6 +11,10 @@ import org.springframework.http.ResponseEntity;
  */
 public class ResponseResult<T> extends ResponseEntity<ResponseData<T>> {
 
+    public ResponseResult() {
+        super(new ResponseData(0, ""), HttpStatus.OK);
+    }
+
     /**
      * 大多数情况下，即使后台发生异常，只要被捕获到，都返给前端HTTP 200
      * 业务相关错误号封装在ResponseData中

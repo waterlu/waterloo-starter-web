@@ -3,6 +3,7 @@ package cn.lu.web.autoconfig;
 import cn.lu.web.annotation.EnableWaterlooWeb;
 import cn.lu.web.mvc.HttpRequestFilter;
 import cn.lu.web.mvc.GlobalExceptionHandler;
+import cn.lu.web.util.TraceIdUtil;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
@@ -56,5 +57,4 @@ public class WaterlooWebAutoConfiguration {
     public GlobalExceptionHandler addAdvice(){
         return new GlobalExceptionHandler();
     }
-
 }
