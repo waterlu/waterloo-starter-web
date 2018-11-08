@@ -1,6 +1,5 @@
 package cn.lu.web.mvc;
 
-import cn.lu.web.util.TraceIdUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import org.apache.logging.log4j.ThreadContext;
@@ -109,7 +108,6 @@ public class HttpRequestFilter implements Filter {
             }
 
             ThreadContext.put("traceID", traceID);
-            TraceIdUtil.getInstance().set(traceID);
 
             // 输出请求日志
             logger.info("sourceIP=[{}], callSystemID=[{}], traceID=[{}], uri=[{}], method=[{}], param=[{}]",

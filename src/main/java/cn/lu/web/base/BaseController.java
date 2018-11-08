@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -55,6 +56,12 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
     public ResponseResult create(@RequestBody @Validated({InsertGroup.class}) P param) throws BizException {
         // 将入参转换为实体类对象，方便Mapper操作
         T entity = paramToEntity(param);
+
+        // 设置默认参数
+        Date now = new Date();
+        entity.setDeleteFlag(0);
+        entity.setCreateTime(now);
+        entity.setUpdateTime(now);
 
         // 持久化到数据库
         int row = getService().save(entity);
@@ -124,6 +131,10 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
 
         // 设置ID字段值
         setEntityId(entity, id);
+
+        // 设置更新时间
+        Date now = new Date();
+        entity.setUpdateTime(now);
 
         // 更新数据库
         int row = getService().update(entity);

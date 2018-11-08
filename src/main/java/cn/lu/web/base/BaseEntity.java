@@ -31,10 +31,6 @@ public abstract class BaseEntity implements Serializable {
     private Date updateTime;
 
     public BaseEntity() {
-        Date now = new Date();
-        deleteFlag = 0;
-        createTime = now;
-        updateTime = now;
     }
 
     public Integer getDeleteFlag() {
