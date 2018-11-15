@@ -82,7 +82,7 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
      * @throws BizException
      */
     @GetMapping(value = "/{id}")
-    public ResponseResult get(@PathVariable Long id) throws BizException {
+    public ResponseResult get(@PathVariable Object id) throws BizException {
         // 根据主键读取数据
         T entity = getService().get(id);
 
@@ -124,7 +124,7 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
      * @throws BizException
      */
     @PutMapping(value = "/{id}")
-    public ResponseResult update(@PathVariable Long id, @RequestBody @Validated({UpdateGroup.class}) P param)
+    public ResponseResult update(@PathVariable Object id, @RequestBody @Validated({UpdateGroup.class}) P param)
             throws BizException {
         // 将入参转换为实体类对象，方便Mapper操作
         T entity = paramToEntity(param);
@@ -152,7 +152,7 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
      * @throws BizException
      */
     @DeleteMapping(value = "/{id}")
-    public ResponseResult delete(@PathVariable Long id) throws BizException {
+    public ResponseResult delete(@PathVariable Object id) throws BizException {
         // 逻辑删除
         int row = getService().delete(id);
 
