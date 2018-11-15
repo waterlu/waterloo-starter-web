@@ -1,5 +1,7 @@
 package cn.lu.web.mvc;
 
+import org.apache.logging.log4j.ThreadContext;
+
 /**
  * 接口返回数据
  *
@@ -24,6 +26,11 @@ public class ResponseData<T> {
     private T data;
 
     /**
+     * 服务追踪用
+     */
+    private String traceID = "";
+
+    /**
      * 成功默认返回信息
      */
     public static final String DEFAULT_SUCCESS_MESSAGE = "成功";
@@ -31,23 +38,27 @@ public class ResponseData<T> {
     public ResponseData() {
         this.code = ResponseCode.SUCCESS.code;
         this.message = DEFAULT_SUCCESS_MESSAGE;
+        this.traceID = ThreadContext.get("traceID");
     }
 
     public ResponseData(int code, String msg) {
         this.code = code;
         this.message = msg;
+        this.traceID = ThreadContext.get("traceID");
     }
 
     public ResponseData(int code, String msg, T data) {
         this.code = code;
         this.message = msg;
         this.data = data;
+        this.traceID = ThreadContext.get("traceID");
     }
 
     public ResponseData(T data) {
         this.code = ResponseCode.SUCCESS.code;
         this.message = DEFAULT_SUCCESS_MESSAGE;
         this.data = data;
+        this.traceID = ThreadContext.get("traceID");
     }
 
 
@@ -78,4 +89,14 @@ public class ResponseData<T> {
     public void setData(T data) {
         this.data = data;
     }
+
+
+    public String getTraceID() {
+        return traceID;
+    }
+
+    public void setTraceID(String traceID) {
+        this.traceID = traceID;
+    }
+
 }
