@@ -13,13 +13,13 @@ public class ParamDTO {
     /**
      * 请求来源标识
      */
-    @ApiModelProperty(value = "调用方ID", required = true)
+    @ApiModelProperty(value = "调用方ID", required = false)
     private String callSystemID = "0000";
 
     /**
      * 请求追踪标识
      */
-    @ApiModelProperty(value = "追踪ID", required = true)
+    @ApiModelProperty(value = "追踪ID", required = false)
     private String traceID = "";
 
     public String getCallSystemID() {

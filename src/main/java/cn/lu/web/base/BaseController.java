@@ -52,8 +52,7 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
      * @return
      * @throws BizException
      */
-    @PostMapping(value = "")
-    public ResponseResult create(@RequestBody @Validated({InsertGroup.class}) P param) throws BizException {
+    public ResponseResult createResource(P param) throws BizException {
         // 将入参转换为实体类对象，方便Mapper操作
         T entity = paramToEntity(param);
 
@@ -81,8 +80,7 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
      * @return
      * @throws BizException
      */
-    @GetMapping(value = "/{id}")
-    public ResponseResult get(@PathVariable Object id) throws BizException {
+    public ResponseResult getResource(Object id) throws BizException {
         // 根据主键读取数据
         T entity = getService().get(id);
 
@@ -101,8 +99,7 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
      * @return
      * @throws BizException
      */
-    @GetMapping(value = "/query")
-    public ResponseResult query(@RequestBody @Validated Q param) throws BizException {
+    public ResponseResult queryResource(Q param) throws BizException {
         // 根据条件查询数据
         List<T> list = getService().query(param);
 
@@ -123,10 +120,9 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
      * @return
      * @throws BizException
      */
-    @GetMapping(value = "/queryAll")
-    public ResponseResult queryAll() throws BizException {
+    public ResponseResult queryAllResource(QueryParam param) throws BizException {
         // 查询所有数据
-        List<T> list = getService().queryAll(new QueryParam());
+        List<T> list = getService().queryAll(param);
         PageInfo pageInfo = new PageInfo(list);
         ListResultVO<T> resultVO = new ListResultVO();
         resultVO.setCount(pageInfo.getTotal());
@@ -144,8 +140,7 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
      * @return 数据库更新的行数
      * @throws BizException
      */
-    @PutMapping(value = "/{id}")
-    public ResponseResult update(@PathVariable Object id, @RequestBody @Validated({UpdateGroup.class}) P param)
+    public ResponseResult updateResource(Object id, P param)
             throws BizException {
         // 将入参转换为实体类对象，方便Mapper操作
         T entity = paramToEntity(param);
@@ -172,8 +167,7 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
      * @return 数据库更新的行数
      * @throws BizException
      */
-    @DeleteMapping(value = "/{id}")
-    public ResponseResult delete(@PathVariable Object id) throws BizException {
+    public ResponseResult deleteResource(Object id) throws BizException {
         // 逻辑删除
         int row = getService().delete(id);
 

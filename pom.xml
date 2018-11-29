@@ -24,6 +24,7 @@
 		<mybatis.version>3.4.4</mybatis.version>
 		<tk.mapper.version>1.1.5</tk.mapper.version>
 		<pagehelper.version>1.2.3</pagehelper.version>
+		<swagger.version>2.9.2</swagger.version>
 	</properties>
 
 	<dependencies>
@@ -113,6 +114,13 @@
 			<groupId>com.github.pagehelper</groupId>
 			<artifactId>pagehelper-spring-boot-starter</artifactId>
 			<version>${pagehelper.version}</version>
+		</dependency>
+
+		<!-- springfox-swagger2 -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>${swagger.version}</version>
 		</dependency>
 
 	</dependencies>
