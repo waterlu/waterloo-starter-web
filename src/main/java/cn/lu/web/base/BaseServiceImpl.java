@@ -175,4 +175,49 @@ public abstract class BaseServiceImpl<T, V extends QueryParam> implements BaseSe
         List<T> list = getMapper().selectByExampleAndRowBounds(condition, rowBounds);
         return list;
     }
+
+    /**
+     * 分页查询所有数据
+     *
+     * @return
+     * @throws BizException
+     */
+    @Override
+    public List<T> queryAll(QueryParam param) throws BizException {
+        // 读取泛型参数
+        Type entityClassType;
+        Type superType = this.getClass().getGenericSuperclass();
+        if (superType instanceof ParameterizedType) {
+            // 第一个泛型是实体类，所以读取[0]
+            entityClassType = ((ParameterizedType) superType).getActualTypeArguments()[0];
+        } else {
+            logger.error("Unknown entity class type");
+            throw new FrameException("Unknown entity class type");
+        }
+
+        // 这里需要指定实体类名
+        String className = entityClassType.getTypeName();
+        Class classType = null;
+        try {
+            classType = Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            logger.error(e.getMessage());
+            throw new FrameException(e.getMessage());
+        }
+
+        // 创建查询条件
+        Example condition = new Example(classType);
+        int startRow = param.getStartRow();
+        int pageSize = param.getPageSize();
+        if (startRow < 0) {
+            startRow = 0;
+        }
+        if (pageSize <= 0) {
+            pageSize = 20;
+        }
+        RowBounds rowBounds = new RowBounds(startRow, pageSize);
+        // 分页查询
+        List<T> list = getMapper().selectByExampleAndRowBounds(condition, rowBounds);
+        return list;
+    }
 }

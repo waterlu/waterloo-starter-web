@@ -118,6 +118,27 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
     }
 
     /**
+     * 查询所有数据
+     *
+     * @return
+     * @throws BizException
+     */
+    @GetMapping(value = "/queryAll")
+    public ResponseResult queryAll() throws BizException {
+        // 查询所有数据
+        List<T> list = getService().queryAll(new QueryParam());
+        PageInfo pageInfo = new PageInfo(list);
+        ListResultVO<T> resultVO = new ListResultVO();
+        resultVO.setCount(pageInfo.getTotal());
+        resultVO.setPageCount(pageInfo.getPages());
+        resultVO.setPageNum(pageInfo.getPageNum());
+        resultVO.setPageSize(pageInfo.getPageSize());
+        resultVO.setList(list);
+        ListResponseData responseData = new ListResponseData(resultVO);
+        return new ResponseResult(responseData);
+    }
+
+    /**
      * 更新-U
      *
      * @return 数据库更新的行数
