@@ -6,9 +6,6 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Date;
@@ -86,7 +83,8 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
 
         if(null == entity) {
             // 读取失败，抛出异常
-            throw new DBException();
+//            throw new DBException();
+            return new ResponseResult();
         }
 
         ResponseData responseData = entityToVo(entity);
@@ -103,26 +101,6 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
         // 根据条件查询数据
         List<T> list = getService().query(param);
 
-        PageInfo pageInfo = new PageInfo(list);
-        ListResultVO<T> resultVO = new ListResultVO();
-        resultVO.setCount(pageInfo.getTotal());
-        resultVO.setPageCount(pageInfo.getPages());
-        resultVO.setPageNum(pageInfo.getPageNum());
-        resultVO.setPageSize(pageInfo.getPageSize());
-        resultVO.setList(list);
-        ListResponseData responseData = new ListResponseData(resultVO);
-        return new ResponseResult(responseData);
-    }
-
-    /**
-     * 查询所有数据
-     *
-     * @return
-     * @throws BizException
-     */
-    public ResponseResult queryAllResource(QueryParam param) throws BizException {
-        // 查询所有数据
-        List<T> list = getService().queryAll(param);
         PageInfo pageInfo = new PageInfo(list);
         ListResultVO<T> resultVO = new ListResultVO();
         resultVO.setCount(pageInfo.getTotal());

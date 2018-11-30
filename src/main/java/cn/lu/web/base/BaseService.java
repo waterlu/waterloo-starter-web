@@ -66,12 +66,4 @@ public interface BaseService<T, V extends QueryParam> {
      * @throws BizException
      */
     List<T> query(V param) throws BizException;
-
-    /**
-     * 分页查询所有数据
-     *
-     * @return
-     * @throws BizException
-     */
-    List<T> queryAll(QueryParam param) throws BizException;
 }

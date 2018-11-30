@@ -60,6 +60,7 @@ public class GlobalExceptionHandler {
                     buffer.append(",");
                 }
                 buffer.append(error.getField());
+                buffer.append(" ");
                 buffer.append(error.getDefaultMessage());
             }
         }

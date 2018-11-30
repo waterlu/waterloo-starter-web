@@ -47,6 +47,30 @@ public class MybatisProvider extends MapperTemplate {
     }
 
     /**
+     * 通过主键和逻辑删除标记更新
+     *
+     * @param ms
+     * @return
+     */
+    public String updateByPrimaryKeySelectiveFlag(MappedStatement ms) {
+        Class<?> entityClass = this.getEntityClass(ms);
+        StringBuilder sql = new StringBuilder();
+        sql.append(SqlHelper.updateTable(entityClass, this.tableName(entityClass)));
+        sql.append(SqlHelper.updateSetColumns(entityClass, (String)null, true, this.isNotEmpty()));
+        sql.append("<where>");
+        Set<EntityColumn> columnList = EntityHelper.getPKColumns(entityClass);
+        Iterator var3 = columnList.iterator();
+
+        while(var3.hasNext()) {
+            EntityColumn column = (EntityColumn)var3.next();
+            sql.append(" AND " + column.getColumnEqualsHolder());
+        }
+        sql.append(" AND delete_flag = 0");
+        sql.append("</where>");
+        return sql.toString();
+    }
+
+    /**
      * 批量插入（主键是UUID）
      *
      * @param ms

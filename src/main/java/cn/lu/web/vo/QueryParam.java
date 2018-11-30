@@ -13,19 +13,19 @@ public class QueryParam extends ParamDTO {
     /**
      * 分页开始下标，默认值为0，从第一页开始
      */
-    @ApiModelProperty(value = "分页开始下标", required = true, notes = "默认值0")
+    @ApiModelProperty(value = "分页开始下标(通用)", required = false, position = 91, notes = "默认值0")
     private Integer startRow = 0;
 
     /**
      * 每页数量，每页默认显示20条数据
      */
-    @ApiModelProperty(value = "每页数量", required = true, notes = "默认值20")
+    @ApiModelProperty(value = "每页数量(通用)", required = false, position = 92, notes = "默认值20")
     private Integer pageSize = 20;
 
     /**
      * 删除标记
      */
-    @ApiModelProperty(value = "逻辑删除标记", required = false)
+    @ApiModelProperty(value = "逻辑删除标记(通用)", required = false, position = 93, notes = "默认查询条件")
     private Integer deleteFlag = 0;
 
     public Integer getStartRow() {

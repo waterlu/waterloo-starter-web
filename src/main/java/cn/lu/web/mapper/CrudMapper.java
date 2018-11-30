@@ -3,6 +3,7 @@ package cn.lu.web.mapper;
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.UpdateProvider;
 import tk.mybatis.mapper.common.BaseMapper;
 import tk.mybatis.mapper.common.RowBoundsMapper;
 import tk.mybatis.mapper.provider.SpecialProvider;
@@ -26,6 +27,15 @@ public interface CrudMapper<T> extends BaseMapper<T>, RowBoundsMapper<T> {
      */
     @DeleteProvider(type = MybatisProvider.class, method = "dynamicSQL")
     int deleteFlag(Object key);
+
+    /**
+     * 根据主键字段和逻辑删除标记进行更新，如果已经被逻辑删除，则不更新
+     *
+     * @param var1
+     * @return
+     */
+    @UpdateProvider(type = MybatisProvider.class, method = "dynamicSQL")
+    int updateByPrimaryKeySelectiveFlag(T var1);
 
 //    /**
 //     * 批量写入

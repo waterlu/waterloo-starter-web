@@ -23,7 +23,7 @@ import java.util.Map;
  * @author lutiehua
  * @date 2018/5/11
  */
-public abstract class BaseServiceImpl<T, V extends QueryParam> implements BaseService<T, V> {
+public abstract class BaseServiceImpl<T extends BaseEntity, V extends QueryParam> implements BaseService<T, V> {
 
     /**
      * 日志
@@ -58,7 +58,13 @@ public abstract class BaseServiceImpl<T, V extends QueryParam> implements BaseSe
      */
     @Override
     public <T> T get(Object id) throws BizException {
-        return (T) getMapper().selectByPrimaryKey(id);
+        BaseEntity entity = getMapper().selectByPrimaryKey(id);
+        // 判断逻辑删除标记
+        if (entity.getDeleteFlag().intValue() != 0) {
+            return null;
+        }
+
+        return (T) entity;
     }
 
     /**
@@ -70,7 +76,7 @@ public abstract class BaseServiceImpl<T, V extends QueryParam> implements BaseSe
      */
     @Override
     public int update(T entity) throws BizException {
-        return getMapper().updateByPrimaryKeySelective(entity);
+        return getMapper().updateByPrimaryKeySelectiveFlag(entity);
     }
 
     /**
@@ -171,51 +177,6 @@ public abstract class BaseServiceImpl<T, V extends QueryParam> implements BaseSe
         // 排序，使用表的字段名称
         // condition.setOrderByClause("create_time desc");
 
-        // 分页查询
-        List<T> list = getMapper().selectByExampleAndRowBounds(condition, rowBounds);
-        return list;
-    }
-
-    /**
-     * 分页查询所有数据
-     *
-     * @return
-     * @throws BizException
-     */
-    @Override
-    public List<T> queryAll(QueryParam param) throws BizException {
-        // 读取泛型参数
-        Type entityClassType;
-        Type superType = this.getClass().getGenericSuperclass();
-        if (superType instanceof ParameterizedType) {
-            // 第一个泛型是实体类，所以读取[0]
-            entityClassType = ((ParameterizedType) superType).getActualTypeArguments()[0];
-        } else {
-            logger.error("Unknown entity class type");
-            throw new FrameException("Unknown entity class type");
-        }
-
-        // 这里需要指定实体类名
-        String className = entityClassType.getTypeName();
-        Class classType = null;
-        try {
-            classType = Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            logger.error(e.getMessage());
-            throw new FrameException(e.getMessage());
-        }
-
-        // 创建查询条件
-        Example condition = new Example(classType);
-        int startRow = param.getStartRow();
-        int pageSize = param.getPageSize();
-        if (startRow < 0) {
-            startRow = 0;
-        }
-        if (pageSize <= 0) {
-            pageSize = 20;
-        }
-        RowBounds rowBounds = new RowBounds(startRow, pageSize);
         // 分页查询
         List<T> list = getMapper().selectByExampleAndRowBounds(condition, rowBounds);
         return list;
