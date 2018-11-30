@@ -84,7 +84,7 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
         if(null == entity) {
             // 读取失败，抛出异常
 //            throw new DBException();
-            return new ResponseResult();
+            return new ResponseResult(ResponseCode.SUCCESS.code, "");
         }
 
         ResponseData responseData = entityToVo(entity);
