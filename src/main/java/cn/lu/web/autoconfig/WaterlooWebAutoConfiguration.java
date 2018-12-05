@@ -27,15 +27,15 @@ public class WaterlooWebAutoConfiguration {
      *
      * @return
      */
-//    @Bean
-//    public HttpMessageConverters fastJsonHttpMessageConverters() {
-//        FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
-//        FastJsonConfig fastJsonConfig = new FastJsonConfig();
-//        fastJsonConfig.setSerializerFeatures(SerializerFeature.PrettyFormat);
-//        fastConverter.setFastJsonConfig(fastJsonConfig);
-//        HttpMessageConverter<?> converter = fastConverter;
-//        return new HttpMessageConverters(converter);
-//    }
+    @Bean
+    public HttpMessageConverters fastJsonHttpMessageConverters() {
+        FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
+        FastJsonConfig fastJsonConfig = new FastJsonConfig();
+        fastJsonConfig.setSerializerFeatures(SerializerFeature.PrettyFormat);
+        fastConverter.setFastJsonConfig(fastJsonConfig);
+        HttpMessageConverter<?> converter = fastConverter;
+        return new HttpMessageConverters(converter);
+    }
 
     /**
      * HttpRequestFilter是自定义的过滤器，用来输出HTTP请求访问日志

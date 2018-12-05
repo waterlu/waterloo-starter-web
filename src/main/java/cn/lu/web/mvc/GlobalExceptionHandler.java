@@ -31,13 +31,12 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(BizException.class)
     @ResponseBody
-    public ResponseResult<String> handleBusinessException(BizException be, HttpServletResponse response) {
+    public ResponseData<String> handleBusinessException(BizException be, HttpServletResponse response) {
         int errorCode = be.getErrorCode();
         String errorMessage = be.getMessage();
         ResponseData<String> responseData = new ResponseData(errorCode, errorMessage);
-        ResponseResult<String> responseResult = new ResponseResult(responseData);
         logger.error("BizException: code=[{}] message=[{}]", errorCode, errorMessage);
-        return responseResult;
+        return responseData;
     }
 
     /**
@@ -49,7 +48,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
-    public ResponseResult<String> handleValidException(MethodArgumentNotValidException ex, HttpServletResponse response) {
+    public ResponseData<String> handleValidException(MethodArgumentNotValidException ex, HttpServletResponse response) {
         BindingResult bindingResult = ex.getBindingResult();
         StringBuffer buffer = new StringBuffer("");
 
@@ -65,12 +64,11 @@ public class GlobalExceptionHandler {
             }
         }
 
-        int errorCode = ResponseCode.PARAM_ERROR.code;
+        int errorCode = ResponseCode.PARAM_ERROR.getCode();
         String errorMessage = buffer.toString();
         ResponseData<String> responseData = new ResponseData(errorCode, errorMessage);
-        ResponseResult<String> responseResult = new ResponseResult(responseData);
         logger.error("ValidException: code=[{}] message=[{}]]", errorCode, errorMessage);
-        return responseResult;
+        return responseData;
     }
 
     /**
@@ -82,12 +80,11 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     @ResponseBody
-    public ResponseResult<String> handleUnknownException(Exception ex, HttpServletResponse response) {
+    public ResponseData<String> handleUnknownException(Exception ex, HttpServletResponse response) {
         int errorCode = ResponseCode.EXCEPTION.code;
         String errorMessage = ex.toString();
         ResponseData<String> responseData = new ResponseData(errorCode, errorMessage);
-        ResponseResult<String> responseResult = new ResponseResult(responseData);
         logger.error("UnknownException: code=[{}] message=[{}]]", errorCode, errorMessage);
-        return responseResult;
+        return responseData;
     }
 }

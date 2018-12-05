@@ -10,20 +10,28 @@ import java.math.BigDecimal;
  */
 public class SimpleResponseData extends ResponseData<String> {
 
+    public SimpleResponseData() {
+        super();
+    }
+
+    public SimpleResponseData(ExceptionInfo exceptionInfo) {
+        super(exceptionInfo.getCode(), exceptionInfo.getMessage());
+    }
+
     public SimpleResponseData(String data) {
-        super(ResponseCode.SUCCESS.code, ResponseData.DEFAULT_SUCCESS_MESSAGE, data);
+        super(data);
     }
 
     public SimpleResponseData(int value) {
-        super(ResponseCode.SUCCESS.code, ResponseData.DEFAULT_SUCCESS_MESSAGE, Integer.toString(value));
+        super(Integer.toString(value));
     }
 
     public SimpleResponseData(long value) {
-        super(ResponseCode.SUCCESS.code, ResponseData.DEFAULT_SUCCESS_MESSAGE, Long.toString(value));
+        super(Long.toString(value));
     }
 
     public SimpleResponseData(BigDecimal value) {
         // 注意：toString() 可能使用科学记数法
-        super(ResponseCode.SUCCESS.code, ResponseData.DEFAULT_SUCCESS_MESSAGE, value.toPlainString());
+        super(value.toPlainString());
     }
 }

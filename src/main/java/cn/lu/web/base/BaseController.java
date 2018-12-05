@@ -3,7 +3,6 @@ package cn.lu.web.base;
 import cn.lu.web.mvc.*;
 import cn.lu.web.vo.*;
 import com.alibaba.fastjson.JSON;
-import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.lang.reflect.ParameterizedType;
@@ -20,7 +19,7 @@ import java.util.List;
  * @author lutiehua
  * @date 2018/5/11
  */
-public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q extends QueryParam> {
+public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q extends QueryParam, V> {
 
     /**
      * 日志
@@ -49,7 +48,7 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
      * @return
      * @throws BizException
      */
-    public ResponseResult createResource(P param) throws BizException {
+    public T createResource(P param) throws BizException {
         // 将入参转换为实体类对象，方便Mapper操作
         T entity = paramToEntity(param);
 
@@ -63,12 +62,10 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
         int row = getService().save(entity);
         if (row == 0) {
             // 写入失败，抛出异常
-            throw new DBException();
+            throw new BizException(ResponseCode.DB_FAILED);
         }
 
-        // 写入成功，返回实体对象；自增ID在save()时回写；
-        ResponseData responseData = entityToVo(entity);
-        return new ResponseResult(responseData);
+        return entity;
     }
 
     /**
@@ -77,18 +74,10 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
      * @return
      * @throws BizException
      */
-    public ResponseResult getResource(Object id) throws BizException {
+    public T getResource(Object id) throws BizException {
         // 根据主键读取数据
         T entity = getService().get(id);
-
-        if(null == entity) {
-            // 读取失败，抛出异常
-//            throw new DBException();
-            return new ResponseResult(ResponseCode.SUCCESS.code, "");
-        }
-
-        ResponseData responseData = entityToVo(entity);
-        return new ResponseResult(responseData);
+        return entity;
     }
 
     /**
@@ -97,19 +86,10 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
      * @return
      * @throws BizException
      */
-    public ResponseResult queryResource(Q param) throws BizException {
+    public List<T> queryResource(Q param) throws BizException {
         // 根据条件查询数据
         List<T> list = getService().query(param);
-
-        PageInfo pageInfo = new PageInfo(list);
-        ListResultVO<T> resultVO = new ListResultVO();
-        resultVO.setCount(pageInfo.getTotal());
-        resultVO.setPageCount(pageInfo.getPages());
-        resultVO.setPageNum(pageInfo.getPageNum());
-        resultVO.setPageSize(pageInfo.getPageSize());
-        resultVO.setList(list);
-        ListResponseData responseData = new ListResponseData(resultVO);
-        return new ResponseResult(responseData);
+        return list;
     }
 
     /**
@@ -118,8 +98,7 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
      * @return 数据库更新的行数
      * @throws BizException
      */
-    public ResponseResult updateResource(Object id, P param)
-            throws BizException {
+    public SimpleResponseData updateResource(Object id, P param) throws BizException {
         // 将入参转换为实体类对象，方便Mapper操作
         T entity = paramToEntity(param);
 
@@ -135,7 +114,7 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
 
         // 返回更新行数，row=0不抛异常
         SimpleResponseData responseData = new SimpleResponseData(row);
-        return new ResponseResult(responseData);
+        return responseData;
     }
 
     /**
@@ -145,13 +124,13 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
      * @return 数据库更新的行数
      * @throws BizException
      */
-    public ResponseResult deleteResource(Object id) throws BizException {
+    public SimpleResponseData deleteResource(Object id) throws BizException {
         // 逻辑删除
         int row = getService().delete(id);
 
         // 返回更新行数，row=0不抛异常
         SimpleResponseData responseData = new SimpleResponseData(row);
-        return new ResponseResult(responseData);
+        return responseData;
     }
 
     /**
@@ -163,7 +142,7 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
      */
     protected T paramToEntity(P param) {
         String jsonString = JSON.toJSONString(param);
-        return (T) JSON.parseObject(jsonString, getEntityType(0));
+        return (T) JSON.parseObject(jsonString, getClassType(0));
     }
 
     /**
@@ -173,8 +152,9 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
      * @param entity
      * @return
      */
-    protected ResponseData entityToVo(T entity) {
-        return new ResponseData<T>(entity);
+    protected V entityToVo(T entity) {
+        String jsonString = JSON.toJSONString(entity);
+        return (V) JSON.parseObject(jsonString, getClassType(3));
     }
 
     /**
@@ -182,7 +162,7 @@ public abstract class BaseController<T extends BaseEntity, P extends ParamDTO, Q
      *
      * @return
      */
-    protected Type getEntityType(int index) {
+    protected Type getClassType(int index) {
         // 读取泛型参数
         Type superType = this.getClass().getGenericSuperclass();
         if (superType instanceof ParameterizedType) {

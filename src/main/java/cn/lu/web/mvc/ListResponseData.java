@@ -8,7 +8,15 @@ import cn.lu.web.vo.ListResultVO;
  */
 public class ListResponseData<T> extends ResponseData<ListResultVO<T>> {
 
+    public ListResponseData() {
+        super();
+    }
+
+    public ListResponseData(ExceptionInfo exceptionInfo) {
+        super(exceptionInfo.getCode(), exceptionInfo.getMessage());
+    }
+
     public ListResponseData(ListResultVO<T> listResultVO) {
-        super(ResponseCode.SUCCESS.code, ResponseData.DEFAULT_SUCCESS_MESSAGE, listResultVO);
+        super(listResultVO);
     }
 }
