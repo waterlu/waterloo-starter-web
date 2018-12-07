@@ -31,35 +31,35 @@ public class QueryParam extends ParamDTO {
     @ApiModelProperty(value = "逻辑删除标记(通用)", required = false, position = 93, notes = "默认查询条件")
     private Integer deleteFlag = 0;
 
-    private List<OrderParam> orderParamList = new ArrayList<>();
-
-    public List<OrderParam> getOrderParamList() {
-        return this.orderParamList;
-    }
-
-    /**
-     * 返回OrderByClause
-     *
-     * @return
-     */
-    public String getOrderString() {
-        if (orderParamList.size() > 0) {
-            StringBuffer buffer = new StringBuffer();
-            boolean first = true;
-            for (OrderParam orderParam : orderParamList) {
-                if (!first) {
-                    buffer.append(", ");
-                }
-                buffer.append(orderParam.getColumnName());
-                buffer.append(" ");
-                buffer.append(orderParam.getOrderType());
-                first = false;
-            }
-            return buffer.toString();
-        } else {
-            return "";
-        }
-    }
+//    private List<OrderParam> orderParamList = new ArrayList<>();
+//
+//    public List<OrderParam> getOrderParamList() {
+//        return this.orderParamList;
+//    }
+//
+//    /**
+//     * 返回OrderByClause
+//     *
+//     * @return
+//     */
+//    public String getOrderString() {
+//        if (orderParamList.size() > 0) {
+//            StringBuffer buffer = new StringBuffer();
+//            boolean first = true;
+//            for (OrderParam orderParam : orderParamList) {
+//                if (!first) {
+//                    buffer.append(", ");
+//                }
+//                buffer.append(orderParam.getColumnName());
+//                buffer.append(" ");
+//                buffer.append(orderParam.getOrderType());
+//                first = false;
+//            }
+//            return buffer.toString();
+//        } else {
+//            return "";
+//        }
+//    }
 
     public Integer getStartRow() {
         return startRow;
