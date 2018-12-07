@@ -10,31 +10,31 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class ParamDTO {
 
-    /**
-     * 请求来源标识
-     */
-    @ApiModelProperty(value = "调用方ID(通用)", position = 100, required = false)
-    private String callSystemID = "0000";
-
-    /**
-     * 请求追踪标识
-     */
-    @ApiModelProperty(value = "服务追踪ID(通用)",  position = 99, required = false)
-    private String traceID = "";
-
-    public String getCallSystemID() {
-        return callSystemID;
-    }
-
-    public void setCallSystemID(String callSystemID) {
-        this.callSystemID = callSystemID;
-    }
-
-    public String getTraceID() {
-        return traceID;
-    }
-
-    public void setTraceID(String traceID) {
-        this.traceID = traceID;
-    }
+//    /**
+//     * 请求来源标识
+//     */
+//    @ApiModelProperty(value = "调用方ID(通用)", position = 100, required = false)
+//    private String callSystemID = "0000";
+//
+//    /**
+//     * 请求追踪标识
+//     */
+//    @ApiModelProperty(value = "服务追踪ID(通用)",  position = 99, required = false)
+//    private String traceID = "";
+//
+//    public String getCallSystemID() {
+//        return callSystemID;
+//    }
+//
+//    public void setCallSystemID(String callSystemID) {
+//        this.callSystemID = callSystemID;
+//    }
+//
+//    public String getTraceID() {
+//        return traceID;
+//    }
+//
+//    public void setTraceID(String traceID) {
+//        this.traceID = traceID;
+//    }
 }
